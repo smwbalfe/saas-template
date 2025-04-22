@@ -1,19 +1,42 @@
 'use client'
-import { SignedIn, SignOutButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs'
-import { useSupabaseClient } from '@/src/lib/hooks/use-supabase'
 import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import EmailForm from '../lib/components/contact-form'
-
+import { Auth } from '@supabase/auth-ui-react'
+import {ThemeSupa} from '@supabase/auth-ui-shared'
+import { client } from '@/src/lib/supabase'
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
+
 export default function Home() {
-  const { user, isSignedIn } = useUser()
-  const client = useSupabaseClient()
+
+  const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  client?.auth.getSession().then(({ data: { session } }) => {
+    setUser(session?.user ?? null)
+  })
+
+  client?.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null)
+    if (session?.user) {
+      fetch('/api/account/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session.user.id
+        }),
+      })
+    }
+  })
+
   const fetchUserData = async () => {
-    if (!isSignedIn || !client) return
+    if (!user || !client) {
+      console.log("User or client not found")
+    }
+    console.log("User found:", user)
     const { data, error } = await client
       .from('users')
       .select('*')
@@ -28,7 +51,6 @@ export default function Home() {
 
   const handleCheckout = () => {
     setIsLoading(true)
-
     fetch('/api/checkout-session', {
       method: 'POST',
       headers: {
@@ -36,7 +58,7 @@ export default function Home() {
       },
       body: JSON.stringify({
         price: 'price_1R7iY4P74SCuSPeLfB4MSpuy',
-        clerkId: user?.id
+        userId: user?.id
       }),
     })
       .then(function (response) {
@@ -62,35 +84,33 @@ export default function Home() {
       });
   }
 
-  
+  if (!client) return null
 
   return (
     <div>
-      {
-        isSignedIn ? (
-          <div>
-            <h1>You are signed in hello</h1>
-            <button onClick={fetchUserData}>Fetch User Data</button>
-            <button
-              onClick={handleCheckout}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Processing...' : 'Subscribe Now'}
-            </button>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignOutButton>
-            </SignOutButton>
-            <EmailForm />
-          </div>
-        ) : (
-          <div>
-            <SignUpButton>
-            </SignUpButton>
-          </div>
-        )
-      }
+      {user ? (
+        <div>
+          <h1>You are signed in hello</h1>
+          <button onClick={() => alert(user.id)}>Show User ID</button>
+          <button onClick={fetchUserData}>Fetch User Data</button>
+          <button
+            onClick={handleCheckout}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Processing...' : 'Subscribe Now'}
+          </button>
+          <button onClick={() => client.auth.signOut()}>Sign Out</button>
+          <EmailForm />
+        </div>
+      ) : (
+        <div style={{maxWidth: '400px', margin: '0 auto'}}>
+          <Auth
+            supabaseClient={client}
+              appearance={{ theme: ThemeSupa  }}
+            providers={['google']}
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -5,15 +5,14 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY as string;
 const stripe = new Stripe(stripeSecretKey);
 
 interface CheckoutRequestBody {
-    clerkId: string;
+    userId: string;
 }
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json() as CheckoutRequestBody;
-        const { clerkId } = body;
-
-        console.log(`clerk id: ${clerkId}`)
+        const { userId } = body;
+        
         const origin = request.headers.get('origin') || 'http://localhost:3000';
 
         const session = await stripe.checkout.sessions.create({
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
             cancel_url: `${origin}/canceled`,
             subscription_data: {
                 metadata: {
-                    clerkId: clerkId
+                    userId: userId
                 }
             }
         });
