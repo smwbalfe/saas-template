@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
       <html lang="en">
         <PostHogProvider>
-        <body>
+        <body className="bg-gray-100">
           {children}
         </body>
         </PostHogProvider>

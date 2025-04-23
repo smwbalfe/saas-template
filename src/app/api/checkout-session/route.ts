@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
                 quantity: 1
             }],
             mode: 'subscription',
-            success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${origin}/premium?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/canceled`,
             subscription_data: {
                 metadata: {
