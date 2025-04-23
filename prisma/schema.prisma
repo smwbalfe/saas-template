@@ -8,10 +8,9 @@ datasource db {
 }
 
 model Account {
-  id               Int      @id @default(autoincrement())
-  userId           String   @unique
+  id               Int      @id @default(autoincrement()) 
+  userId           String   @unique // supabase user id
   createdAt        DateTime @default(now())
-  email            String?
   updatedAt        DateTime @updatedAt
   stripeCustomerId String?
   package          String?

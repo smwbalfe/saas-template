@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/src/lib/prisma";
-import { subscribe } from "diagnostics_channel";
-import { SubscriptIcon } from "lucide-react";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(request: NextRequest) {
     try {
 
-        console.log("post request was received from stripe")
         const body = await request.text();
         const signature = request.headers.get("stripe-signature");
 
@@ -33,19 +30,21 @@ export async function POST(request: NextRequest) {
         switch (event.type) {
             case "customer.subscription.created": {
                 const subscription = event.data.object;
-
-                console.log(subscription.metadata)
-
-                console.log(subscription.metadata.clerkId)
-                await prisma.account.update({
+                await prisma.account.upsert({
                     where: {
-                        userId: subscription.metadata.clerkId,
+                        userId: subscription.metadata.userId,
                     },
-                    data: {
+                    update: {
                         status: "ACTIVE",
                         package: "MONTHLY_SUBSCRIPTION",
                         stripeCustomerId: subscription.customer as string,
                     },
+                    create: {
+                        userId: subscription.metadata.userId,
+                        status: "ACTIVE",
+                        package: "MONTHLY_SUBSCRIPTION",
+                        stripeCustomerId: subscription.customer as string,
+                    }
                 });
                 break;
             }
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
                 if (payment.mode === "payment") {
                     await prisma.account.update({
                         where: {
-                            userId: payment.metadata!.clerkId,
+                            userId: payment.metadata!.userId,
                         },
                         data: {
                             status: "ACTIVE",
@@ -69,7 +68,7 @@ export async function POST(request: NextRequest) {
                 if (subscription.cancel_at_period_end) {
                     await prisma.account.update({
                         where: {
-                            userId: subscription.metadata.clerkId,
+                            userId: subscription.metadata.userId,
                         },
                         data: {
                             status: "CANCELLED",
@@ -78,7 +77,7 @@ export async function POST(request: NextRequest) {
                 } else {
                     await prisma.account.update({
                         where: {
-                            userId: subscription.metadata.clerkId,
+                            userId: subscription.metadata.userId,
                         },
                         data: {
                             status: "ACTIVE",
@@ -91,7 +90,7 @@ export async function POST(request: NextRequest) {
                 const subscription = event.data.object;
                 await prisma.account.update({
                     where: {
-                        userId: subscription.metadata.clerkId,
+                        userId: subscription.metadata.userId,
                     },
                     data: {
                         status: "INACTIVE",
