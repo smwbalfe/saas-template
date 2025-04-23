@@ -14,11 +14,11 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-        {/* <PostHogProvider> */}
+        <PostHogProvider>
         <body>
           {children}
         </body>
-        {/* </PostHogProvider> */}
+        </PostHogProvider>
       </html>
   )
 }
