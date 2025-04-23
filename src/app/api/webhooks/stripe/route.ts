@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
 
         switch (event.type) {
             case "customer.subscription.created": {
-                console.log("subscription created")
                 const subscription = event.data.object;
                 await prisma.account.upsert({
                     where: {

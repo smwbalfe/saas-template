@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 
+
 export async function POST(request: NextRequest) {
     try {
         const { userId } = await request.json();
-        const existingAccount = await prisma.account.findUnique({
+        const existingAccount = await prisma?.account.findUnique({
             where: { userId }
         });
         if (existingAccount) {

@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react'
-import { createClient } from '@/src/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/lib/components/ui/card'
 import { Progress } from '@/src/lib/components/ui/progress'
 import { Button } from '@/src/lib/components/ui/button'
@@ -9,48 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/src/lib/components/ui/ava
 import { Activity, BarChart3, Bell, Settings, Shield, Users } from 'lucide-react'
 
 export const PremiumPage = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const router = useRouter()
-    const supabase = createClient()
-
-    useEffect(() => {
-        const checkSubscription = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) {
-                router.push('/')
-                return
-            }
-
-            const { data: account } = await supabase
-                .from('Account')
-                .select('status')
-                .eq('userId', user.id)
-                .single()
-
-            if (account?.status !== 'ACTIVE') {
-                router.push('/')
-                return
-            }
-
-            setIsLoading(false)
-        }
-
-        checkSubscription()
-    }, [router])
-
-    if (isLoading) {
-        return <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-        </div>
-    }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 p-6">
+        <div className="min-h-screen bg-linear-to-br from-purple-50 via-indigo-50 to-blue-50 p-6">
             <div className="max-w-7xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">Premium Dashboard</h1>
-                        <p className="text-muted-foreground mt-2 text-red-500">Welcome to your premium workspace</p>
+                        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-600 to-blue-600">Premium Dashboard</h1>
+                        <p className="mt-2 text-red-500">Welcome to your premium workspace</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon">

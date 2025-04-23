@@ -14,11 +14,11 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-        <PostHogProvider>
-        <body className="bg-gray-100">
+        {/* <PostHogProvider> */}
+        <body>
           {children}
         </body>
-        </PostHogProvider>
+        {/* </PostHogProvider> */}
       </html>
   )
 }
