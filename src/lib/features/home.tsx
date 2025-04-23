@@ -5,45 +5,119 @@ import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { client } from '@/src/lib/supabase/client'
 import { useCheckout } from '@/src/lib/hooks/use-checkout'
 import { useAuthListener } from '@/src/lib/hooks/use-auth-listener'
+import { Button } from '@/src/lib/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/lib/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/src/lib/components/ui/avatar'
+import { LogOut, Zap, Moon, Sun, Crown } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
+import { Badge } from '@/src/lib/components/ui/badge'
 
 export const Home = () => {
     const { user } = useAuthListener()
     const { handleCheckout, isLoading } = useCheckout(user?.id)
+    const { theme, setTheme } = useTheme()
+    const [isSubscribed, setIsSubscribed] = useState(false)
+
+    useEffect(() => {
+        if (user) {
+            const checkSubscription = async () => {
+                const { data: account } = await client
+                    .from('Account')
+                    .select('status')
+                    .eq('userId', user.id)
+                    .single()
+                setIsSubscribed(account?.status === 'ACTIVE')
+            }
+            checkSubscription()
+        }
+    }, [user])
+
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 min-h-screen bg-background">
+            <div className="absolute top-4 right-4">
+                <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className="hover:bg-muted"
+                >
+                    {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+            </div>
             {user ? (
-                <div className="max-w-md mx-auto">
-                    <h1 className="text-2xl font-bold text-gray-800 mb-4">You are signed in hello</h1>
-                    <div className="space-y-4">
-                        <button
-                            onClick={() => alert(user.id)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
-                        >
-                            Show User ID
-                        </button>
-                        <button
-                            onClick={handleCheckout}
-                            disabled={isLoading}
-                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full disabled:opacity-50"
-                        >
-                            {isLoading ? 'Processing...' : 'Subscribe Now'}
-                        </button>
-                        <button
-                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full"
+                <Card className="max-w-md mx-auto bg-card">
+                    <CardHeader>
+                        <div className="flex items-center gap-4">
+                            <Avatar>
+                                <AvatarImage src={user.user_metadata.avatar_url} />
+                                <AvatarFallback>{user.user_metadata.name?.[0]}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <CardTitle>Welcome, {user.user_metadata.name}</CardTitle>
+                                    {isSubscribed && (
+                                        <Badge variant="secondary" className="flex items-center gap-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                                            <Crown className="h-3 w-3" />
+                                            Premium
+                                        </Badge>
+                                    )}
+                                </div>
+                                <CardDescription>{user.email}</CardDescription>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {!isSubscribed && (
+                            <Button 
+                                onClick={handleCheckout} 
+                                disabled={isLoading}
+                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-200"
+                                size="lg"
+                            >
+                                <Zap className="mr-2 h-4 w-4" />
+                                Subscribe Now
+                            </Button>
+                        )}
+                        <Button 
+                            variant="outline" 
                             onClick={() => client.auth.signOut()}
+                            className="w-full"
                         >
+                            <LogOut className="mr-2 h-4 w-4" />
                             Sign Out
-                        </button>
-                    </div>
-                </div>
+                        </Button>
+                    </CardContent>
+                </Card>
             ) : (
-                <div className="max-w-md mx-auto">
-                    <Auth
-                        supabaseClient={client}
-                        appearance={{ theme: ThemeSupa }}
-                        providers={['google']}
-                    />
-                </div>
+                <Card className="max-w-md mx-auto bg-card">
+                    <CardHeader>
+                        <CardTitle>Welcome</CardTitle>
+                        <CardDescription>Sign in to get started</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Auth
+                            supabaseClient={client}
+                            appearance={{
+                                theme: ThemeSupa,
+                                variables: {
+                                    default: {
+                                        colors: {
+                                            brand: 'hsl(var(--primary))',
+                                            brandAccent: 'hsl(var(--primary))',
+                                            inputBackground: 'hsl(var(--background))',
+                                            inputBorder: 'hsl(var(--border))',
+                                            inputText: 'hsl(var(--foreground))',
+                                            messageText: 'hsl(var(--foreground))',
+                                            messageBackground: 'hsl(var(--muted))',
+                                        }
+                                    }
+                                }
+                            }}
+                            providers={['google']}
+                        />
+                    </CardContent>
+                </Card>
             )}
         </div>
     )

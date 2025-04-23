@@ -1,3 +1,3 @@
 'use client'
-import { Home } from "@/src/lib/features/home";
-export default Home;
+import { PremiumPage } from "@/src/lib/features/premium/premium";
+export default PremiumPage;
