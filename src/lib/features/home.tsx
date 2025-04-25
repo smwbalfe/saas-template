@@ -88,7 +88,7 @@ export const Home = () => {
                             <Auth
                                 supabaseClient={supabaseBrowserClient}
                                 appearance={{
-                                    theme: Su
+                                    theme: ThemeSupa
                                 }}
                                 providers={['google']}
                             />
