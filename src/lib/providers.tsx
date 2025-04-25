@@ -31,7 +31,7 @@ function PostHogPageView() {
     const posthog = usePostHog()
     
     useEffect(() => {
-        if (pathname && posthog && typeof window !== 'undefined') {
+        if (pathname && posthog) {
             let url = window.origin + pathname
             if (searchParams.toString()) {
                 url = url + "?" + searchParams.toString();
