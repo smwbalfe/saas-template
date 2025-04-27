@@ -2,9 +2,8 @@
 
 export default function ThemeTestPage() {
   return (
-    <div className="p-8 bg-background min-h-screen font-primary">
+    <div className="p-8 bg-background min-h-screen font-primary dark:bg-orange-500">
       <h1 className="text-heading font-primary mb-6 text-text">Theme Components</h1>
-      
       <section className="space-y-8">
         <div>
           <h2 className="text-subheading mb-4">Colors</h2>

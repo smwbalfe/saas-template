@@ -1,38 +1,41 @@
+'use client'
+
 import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
+import { createCheckoutSession } from '@/src/lib/actions/checkout-session'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export const useCheckout = (userId: string | undefined) => {
     const [isLoading, setIsLoading] = useState(false)
-
     const handleCheckout = async () => {
+        if (!userId) {
+            alert('User ID is required')
+            return
+        }
         setIsLoading(true)
         try {
-            const response = await fetch('/api/checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    price: 'price_1R7iY4P74SCuSPeLfB4MSpuy',
-                    userId
-                }),
-            })
-            const session = await response.json()
-            const stripe = await stripePromise
-            const result = await stripe?.redirectToCheckout({
-                sessionId: session.sessionId
-            })
-            if (result?.error) {
-                alert(result.error.message)
+            const result = await createCheckoutSession({userId, line_item: {price: 'price_1R7iY4P74SCuSPeLfB4MSpuy', quantity: 1}})
+            if (result.sessionId) {
+                const stripe = await stripePromise
+                if (!stripe) {
+                    throw new Error('Stripe failed to initialize')
+                }
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: result.sessionId
+                })
+                if (error) {
+                    throw new Error(error.message)
+                }
+            } else {
+                throw new Error(result.error || 'Checkout session creation failed')
             }
         } catch (error) {
             console.error('Checkout error:', error)
+            alert(error instanceof Error ? error.message : 'An error occurred during checkout')
         } finally {
             setIsLoading(false)
         }
     }
-
     return { handleCheckout, isLoading }
-} 
+}

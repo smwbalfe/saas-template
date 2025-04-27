@@ -15,4 +15,5 @@ model Account {
   stripeCustomerId String?
   package          String?
   status           String   @default("INACTIVE")
+  welcomeEmailSent Boolean  @default(false)
 }

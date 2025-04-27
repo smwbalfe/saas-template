@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import '@/src/globals.css'
 import { PostHogProvider } from '@/src/lib/providers'
 import ThemeWrapper from '@/src/lib/components/theme-wrapper'
+import NavbarWrapper from './navbar-wrapper'
 
 export const metadata: Metadata = {
   title: 'Next.js Quickstart',
@@ -14,14 +15,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-      <html lang="en" suppressHydrationWarning>
-        <body suppressHydrationWarning>
-          <PostHogProvider>
-            <ThemeWrapper>
-              {children}
-            </ThemeWrapper>
-          </PostHogProvider>
-        </body>
-      </html>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <PostHogProvider>
+          <ThemeWrapper>
+            <NavbarWrapper />
+            {children}
+          </ThemeWrapper>
+        </PostHogProvider>
+      </body>
+    </html>
   )
 }
