@@ -1,30 +1,20 @@
 "use client"
 
-import { supabaseBrowserClient } from '@/src/lib/supabase/client'
-import { useAuthListener } from '@/src/lib/hooks/use-auth-listener'
-import { useEffect, useState } from 'react'
+import { useCheckout } from "../hooks/use-checkout"
+import { useAuthListener } from "../hooks/use-auth-listener"
+import { Button } from "../components/ui/button"
 
-export const Navbar = () => {
+export const Home = () => {
     const { user } = useAuthListener()
-    const [isSubscribed, setIsSubscribed] = useState(false)
-
-    useEffect(() => {
-        if (user) {
-            const checkSubscription = async () => {
-                const { data: account } = await supabaseBrowserClient
-                    .from('Account')
-                    .select('status')
-                    .eq('userId', user.id)
-                    .single()
-                setIsSubscribed(account?.status === 'ACTIVE')
-            }
-            checkSubscription()
-        }
-    }, [user])
+    const { handleCheckout, isLoading } = useCheckout(user?.id)
 
     return (
-        <div>
-            <h1>dashboard</h1>
+        <div className="flex flex-col items-center justify-center">
+            <div>
+                <Button onClick={handleCheckout} disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Checkout'}
+                </Button>
+            </div>
         </div>
     )
 }

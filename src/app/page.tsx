@@ -1,3 +1,2 @@
-'use client'
-import { Navbar } from "@/src/lib/features/home";
-export default Navbar;
+import { Home } from '@/src/lib/features/home'
+export default Home;

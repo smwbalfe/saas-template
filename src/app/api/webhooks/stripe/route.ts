@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
                 await prisma.account.upsert({
                     where: {
                         userId: subscription.metadata.userId,
-                    },
+                    }, 
                     update: {
                         status: "ACTIVE",
                         package: "MONTHLY_SUBSCRIPTION",

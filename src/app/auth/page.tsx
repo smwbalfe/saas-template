@@ -6,24 +6,25 @@ import { Button } from "@/src/lib/components/ui/button";
 import { Checkbox } from "@/src/lib/components/ui/checkbox";
 import { Input } from "@/src/lib/components/ui/input";
 import { supabaseBrowserClient } from "@/src/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
-interface Login3Props {
-    heading?: string;
-    subheading?: string;
+interface LoginProps {
+    heading?: string
+    subheading?: string
     logo: {
-        url: string;
-        src: string;
-        alt: string;
-    };
-    loginText?: string;
-    googleText?: string;
-    signupText?: string;
-    signupUrl?: string;
-    redirectTo?: string;
-    redirectToSignup?: string;
+        url: string
+        src: string
+        alt: string
+    }
+    loginText?: string
+    googleText?: string
+    signupText?: string
+    signupUrl?: string
+    redirectTo?: string
+    redirectToSignup?: string
 }
 
-const Auth = ({
+function LoginComponent({
     heading = "Login",
     subheading = "Welcome back",
     logo = {
@@ -37,7 +38,7 @@ const Auth = ({
     signupUrl = "#",
     redirectTo = "/api/auth/callback",
     redirectToSignup = "/",
-}: Login3Props) => {
+}: LoginProps) {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -46,6 +47,7 @@ const Auth = ({
     const [mode, setMode] = useState("login"); // login, reset, signup
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const router = useRouter();
 
     const resetForm = () => {
         setEmail("");
@@ -55,12 +57,10 @@ const Auth = ({
         setError("");
         setMessage("");
     };
-
     const switchMode = (newMode: string) => {
         resetForm();
         setMode(newMode);
     };
-
     const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -72,7 +72,7 @@ const Auth = ({
                 password
             });
             if (error) throw error;
-            window.location.href = redirectTo;
+            router.push('/');
         } catch (error: any) {
             console.log(error);
             setError(error.message || "Failed to sign in");
@@ -80,7 +80,6 @@ const Auth = ({
             setLoading(false);
         }
     };
-
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -116,7 +115,6 @@ const Auth = ({
             setLoading(false);
         }
     };
-
     const handlePasswordReset = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -139,7 +137,6 @@ const Auth = ({
             setLoading(false);
         }
     };
-
     const handleGoogleLogin = async () => {
         setLoading(true);
         try {
@@ -367,6 +364,12 @@ const Auth = ({
             </div>
         </section>
     );
-};
+}
 
-export default Auth;
+export default function Auth() {
+    return <LoginComponent logo={{
+        url: "https://www.shadcnblocks.com",
+        src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
+        alt: "Shadcnblocks"
+    }} />
+}

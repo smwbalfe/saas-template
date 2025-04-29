@@ -1,55 +1,72 @@
 "use client"
-import { useState } from 'react';
-import { supabaseBrowserClient } from '@/src/lib/supabase/client';
-import {useRouter} from 'next/navigation';
+import { useState } from 'react'
+import { supabaseBrowserClient } from '@/src/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/src/lib/components/ui/button'
+import { Input } from '@/src/lib/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/lib/components/ui/card'
+import { Alert, AlertDescription } from '@/src/lib/components/ui/alert'
+import { CheckCircle2, AlertCircle } from 'lucide-react'
 
 const PasswordReset = () => {
-
     const router = useRouter()
-
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
+    const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState('')
+    const [isError, setIsError] = useState(false)
 
     const handlePasswordReset = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
+        e.preventDefault()
+        setLoading(true)
         try {
-            const { error } = await supabaseBrowserClient.auth.updateUser({ password });
-            if (error) throw error;
-            setMessage('Password updated successfully!');
+            const { error } = await supabaseBrowserClient.auth.updateUser({ password })
+            if (error) throw error
+            setMessage('Password updated successfully!')
+            setIsError(false)
             await supabaseBrowserClient.auth.signOut()
-            router.push('/auth');
-            setPassword('');
+            router.push('/auth')
+            setPassword('')
         } catch (err: any) {
-            setMessage('Error: ' + err.message);
+            setMessage(err.message)
+            setIsError(true)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     return (
-        <div>
-            <h2>Reset Your Password</h2>
-
-            <form onSubmit={handlePasswordReset}>
-                <div>
-                    <label htmlFor="password">New Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                {message && <p>{message}</p>}
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Updating...' : 'Update Password'}
-                </button>
-            </form>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <Card className="w-full max-w-md">
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+                    <CardDescription>Enter your new password below</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handlePasswordReset} className="space-y-4">
+                        <div className="space-y-2">
+                            <Input
+                                type="password"
+                                placeholder="New Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="w-full"
+                            />
+                        </div>
+                        {message && (
+                            <Alert variant={isError ? "destructive" : "default"}>
+                                {isError ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
+                                <AlertDescription>{message}</AlertDescription>
+                            </Alert>
+                        )}
+                        <Button type="submit" className="w-full" disabled={loading}>
+                            {loading ? 'Updating...' : 'Update Password'}
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
-    );
-};
+    )
+}
 
-export default PasswordReset;
+export default PasswordReset
