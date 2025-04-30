@@ -2,7 +2,6 @@
 
 import { supabaseBrowserClient } from '@/src/lib/supabase/client'
 import { useCheckout } from '@/src/lib/hooks/use-checkout'
-import { useAuthListener } from '@/src/lib/hooks/use-auth-listener'
 import { Button } from '@/src/lib/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/lib/components/ui/avatar'
 import { LogOut, Zap, Crown, CircleX, User } from 'lucide-react'
@@ -16,14 +15,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/src/lib/components/ui/dropdown-menu'
-import { useRouter } from 'next/navigation'
 import { checkSubscription } from '../actions/check-subscription'
-
+import { useUser } from '@/src/lib/features/auth/hooks/use-user'
 export const Navbar = () => {
-    const { user } = useAuthListener()
+    const { user } = useUser()
     const { handleCheckout, isLoading } = useCheckout(user?.id)
     const [isSubscribed, setIsSubscribed] = useState(false)
-    const router = useRouter()
 
     useEffect(() => {
         if (user) {
@@ -35,7 +32,6 @@ export const Navbar = () => {
 
     const handleSignOut = async () =>  {
         await supabaseBrowserClient.auth.signOut() 
-        router.push('/auth')
     }
 
     const handleDeleteAccount = async () => {

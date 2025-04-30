@@ -30,7 +30,6 @@ const useLoginForm = (redirectTo: string) => {
                 password: values.password,
             })
             if (error) throw error
-            revalidatePath('/', 'layout')
             router.push('/')
         } catch (error: any) {
             setServerError(error.message || "Failed to sign in. Please try again.")

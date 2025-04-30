@@ -1,10 +1,9 @@
 'use server'
 import { Resend } from 'resend';
 import WelcomeEmail from '@/src/lib/emails/welcome';
-import { prisma } from '@/src/lib/prisma'; // Add this import for Prisma client
+import { prisma } from '@/src/lib/prisma';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-import { createClient } from '@/src/lib/supabase/server';
 
 export type EmailData = {
     email: string;
@@ -27,13 +26,20 @@ export async function sendEmail(emailData: EmailData) {
             console.log("Welcome email already sent to", email);
             return { success: true, data: null, alreadySent: true };
         }
+
+        const fromEmail = process.env.RESEND_FROM
+
+        if (!fromEmail) {
+            return { success: false, error: 'Email not found' };
+        }
         
         const data = await resend.emails.send({
-            from: 'simon@shrillecho.app',
+            from: fromEmail,
             to: email,
             subject: 'Welcome to Our Platform',
             react: WelcomeEmail({ name })
         });
+        
         await prisma.account.update({
             where: { id: account.id },
             data: { welcomeEmailSent: true }

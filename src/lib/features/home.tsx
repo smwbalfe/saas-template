@@ -1,8 +1,8 @@
 "use client"
-import { useAuthListener } from "../hooks/use-auth-listener"
+import { useUser } from "@/src/lib/features/auth/hooks/use-user"
 
 export const Home = () => {
-    const {user} = useAuthListener()
+    const {user} = useUser()
     if (!user) {
         return <div>Loading...</div>
     }

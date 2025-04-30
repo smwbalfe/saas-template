@@ -2,12 +2,8 @@ import { useState, useEffect } from 'react'
 import { supabaseBrowserClient } from '@/src/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
-import { logSupabaseEvent } from '../actions/log-auth-status'
 
-/*
-    Client side listener to update the user as the backend session is updated
-*/
-export const useAuthListener = () => {
+export const useUser = () => {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState<User | null>(null)
     const router = useRouter()

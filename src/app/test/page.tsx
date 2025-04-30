@@ -1,50 +1,153 @@
 "use client"
 
-export default function ThemeTestPage() {
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/lib/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/lib/components/ui/tabs"
+import { Button } from "@/src/lib/components/ui/button"
+import { Input } from "@/src/lib/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/lib/components/ui/select"
+import { Progress } from "@/src/lib/components/ui/progress"
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/lib/components/ui/avatar"
+import { Badge } from "@/src/lib/components/ui/badge"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+
+const sentimentData = [
+  { name: '1h', positive: 65, negative: 35, neutral: 45 },
+  { name: '6h', positive: 55, negative: 45, neutral: 40 },
+  { name: '12h', positive: 70, negative: 30, neutral: 50 },
+  { name: '24h', positive: 45, negative: 55, neutral: 35 },
+  { name: '48h', positive: 60, negative: 40, neutral: 45 },
+]
+
+const cryptoData = [
+  { name: 'BTC', price: '$42,831.89', change: '+2.4%', sentiment: 'positive' },
+  { name: 'ETH', price: '$2,345.12', change: '+1.2%', sentiment: 'positive' },
+  { name: 'SOL', price: '$103.45', change: '-3.2%', sentiment: 'negative' },
+  { name: 'DOGE', price: '$0.082', change: '+5.7%', sentiment: 'positive' },
+]
+
+export default function CryptoSentimentDashboard() {
   return (
-    <div className="p-8 bg-background min-h-screen font-primary dark:bg-orange-500">
-      <h1 className="text-heading font-primary mb-6 text-text">Theme Components</h1>
-      <section className="space-y-8">
-        <div>
-          <h2 className="text-subheading mb-4">Colors</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-primary text-white ">Primary Color</div>
-            <div className="p-4 bg-secondary text-white">Secondary Color</div>
-            <div className="p-4 bg-accent text-white">Accent Color</div>
-          </div>
+    <div className="p-8 bg-background min-h-screen">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Crypto Sentiment Analyzer</h1>
+        <div className="flex gap-4">
+          <Input placeholder="Search coin..." className="w-64" />
+          <Select>
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Timeframe" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1h">1 Hour</SelectItem>
+              <SelectItem value="6h">6 Hours</SelectItem>
+              <SelectItem value="24h">24 Hours</SelectItem>
+              <SelectItem value="7d">7 Days</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+      </div>
 
-        <div>
-          <h2 className="text-subheading mb-4">Typography</h2>
-          <div className="space-y-2">
-            <p className="font-primary">Primary Font: Inter</p>
-            <p className="text-heading">Heading Text Size</p>
-            <p className="text-subheading">Subheading Text Size</p>
-          </div>
-        </div>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
+          <TabsTrigger value="tweets">Top Tweets</TabsTrigger>
+        </TabsList>
 
-        <div>
-          <h2 className="text-subheading mb-4">Shadows</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-white shadow-primary rounded">Primary Shadow</div>
-            <div className="p-4 bg-white shadow-secondary rounded">Secondary Shadow</div>
-            <div className="p-4 bg-white shadow-accent rounded">Accent Shadow</div>
-          </div>
-        </div>
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Positive Sentiment</CardTitle>
+                <Badge variant="secondary">+8%</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">65.2%</div>
+                <Progress value={65} className="mt-2" />
+              </CardContent>
+            </Card>
 
-        <div>
-          <h2 className="text-subheading mb-4">Combined Elements</h2>
-          <div className="p-6 bg-primary shadow-primary rounded">
-            <h3 className="text-heading text-white font-primary mb-2">Primary Section</h3>
-            <p className="text-white">Using primary colors and shadows</p>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Negative Sentiment</CardTitle>
+                <Badge variant="destructive">-3%</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">24.5%</div>
+                <Progress value={25} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tweet Volume</CardTitle>
+                <Badge variant="secondary">+12%</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12,345</div>
+                <Progress value={75} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Influencer Reach</CardTitle>
+                <Badge variant="secondary">+5%</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">4.2M</div>
+                <Progress value={60} className="mt-2" />
+              </CardContent>
+            </Card>
           </div>
-          
-          <div className="p-6 bg-secondary shadow-secondary rounded mt-4">
-            <h3 className="text-subheading text-white font-primary mb-2">Secondary Section</h3>
-            <p className="text-white">Using secondary colors and shadows</p>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Sentiment Trends</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={sentimentData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="positive" stroke="#10b981" name="Positive" />
+                      <Line type="monotone" dataKey="negative" stroke="#ef4444" name="Negative" />
+                      <Line type="monotone" dataKey="neutral" stroke="#6b7280" name="Neutral" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Top Mentioned Coins</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {cryptoData.map((coin) => (
+                  <div key={coin.name} className="flex items-center gap-4">
+                    <Avatar>
+                      <AvatarImage src={`https://cryptologos.cc/logos/${coin.name.toLowerCase()}-${coin.name.toLowerCase()}-logo.png`} />
+                      <AvatarFallback>{coin.name.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-medium">{coin.name}</p>
+                      <p className="text-sm text-muted-foreground">{coin.price}</p>
+                    </div>
+                    <Badge variant={coin.sentiment === 'positive' ? 'outline' : 'destructive'}>
+                      {coin.change}
+                    </Badge>
+                    <Button variant="outline" size="sm">Details</Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
-        </div>
-      </section>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -46,9 +46,7 @@ const checkPremiumAccess = async (supabase: ReturnType<typeof createServerClient
 export async function updateSession(request: NextRequest) {
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user } } = await supabase.auth.getUser()
-
     const path = request.nextUrl.pathname
-
     if (!user) {
         if (!path.startsWith('/auth')) {
             return redirectWithCookies(request, '/auth')
@@ -63,6 +61,5 @@ export async function updateSession(request: NextRequest) {
             }
         }
     }
-    
     return supabaseResponse
 }

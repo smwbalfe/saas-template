@@ -2,14 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src
 import { Progress } from '@/src/lib/components/ui/progress'
 import { Button } from '@/src/lib/components/ui/button'
 import { Badge } from '@/src/lib/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/src/lib/components/ui/avatar'
-import { Activity, BarChart3, Bell, Settings, Shield, Users, Zap, ArrowUpRight, ChevronRight } from 'lucide-react'
+import { Activity, BarChart3, Settings, Shield, Users, Zap, ArrowUpRight, ChevronRight } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/lib/components/ui/tabs'
-import { useAuthListener } from '@/src/lib/hooks/use-auth-listener'
+import { useUser } from '@/src/lib/features/auth/hooks/use-user'
 import { useState } from 'react'
 
 export const PremiumPage = () => {
-    const { user } = useAuthListener()
+    const { user } = useUser()
     const [usageData, setUsageData] = useState({
         dailyUsage: 75,
         storage: 45,

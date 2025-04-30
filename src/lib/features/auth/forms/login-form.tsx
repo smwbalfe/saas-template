@@ -70,7 +70,7 @@ export function LoginForm({ onSwitchMode, googleText = "Log in with Google", log
                         Forgot password?
                     </button>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-gray-200 hover:bg-gray-500" disabled={loading}>
                     {loading ? "Loading..." : loginText}
                 </Button>
                 <div className="relative my-2">
@@ -84,7 +84,7 @@ export function LoginForm({ onSwitchMode, googleText = "Log in with Google", log
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="w-full hover:bg-button-hover"
                     onClick={handleGoogleLogin}
                     disabled={loading}
                 >
