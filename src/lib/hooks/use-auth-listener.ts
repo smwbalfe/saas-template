@@ -1,33 +1,43 @@
 import { useState, useEffect } from 'react'
 import { supabaseBrowserClient } from '@/src/lib/supabase/client'
-import { sendEmail } from '../actions/email'
+import { logSupabaseEvent } from '../actions/log-auth-status'
 
 export const useAuthListener = () => {
     const [user, setUser] = useState<any>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        supabaseBrowserClient?.auth.getSession().then(({ data: { session } }) => {
-            console.log('Session', session)
-            if (session?.user) {
-                setUser(session.user)
-            } else {
-                setUser(null)
-            }
-        })
+        const initializeAuth = async () => {
+            const { data: { user: currentUser } } = await supabaseBrowserClient.auth.getUser()
+            setUser(currentUser)
+        }
 
-        const { data: { subscription } } = supabaseBrowserClient?.auth.onAuthStateChange(async (event, session) => {
-            console.log("event", event)
+        initializeAuth()
+
+        const { data: { subscription } } = supabaseBrowserClient.auth.onAuthStateChange(async (event, session) => {
+            
             if (event === 'SIGNED_OUT') {
                 setUser(null)
+                if (window.location.pathname !== '/auth') {
+                    window.location.href = '/auth'
+                }
             } else if (event === 'SIGNED_IN') {
                 setUser(session?.user)
-                sendEmail({ name: session?.user.user_metadata.name ?? '', email: session?.user.email ?? '', userId: session?.user.id ?? ''})
-            } else if (event === 'PASSWORD_RECOVERY'){
-               const newPassword = prompt('Enter your new password') 
-               const {data, error} = await supabaseBrowserClient.auth.updateUser({password: newPassword!})
-               if (data) { alert('Password updated successfully')}
-               if (error) { alert(error.message)}
-            } 
+                if (window.location.pathname === '/auth') {
+                    window.location.href = '/'
+                }
+            } else if (event === 'PASSWORD_RECOVERY') {
+                const newPassword = prompt('Enter your new password')
+                if (newPassword) {
+                    try {
+                        const { error } = await supabaseBrowserClient.auth.updateUser({ password: newPassword })
+                        if (error) throw error
+                        alert('Password updated successfully')
+                    } catch (error: any) {
+                        alert(error.message)
+                    }
+                }
+            }
         })
 
         return () => {
@@ -35,5 +45,5 @@ export const useAuthListener = () => {
         }
     }, [])
 
-    return { user }
+    return { user, loading }
 }

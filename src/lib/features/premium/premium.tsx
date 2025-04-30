@@ -25,19 +25,6 @@ export const PremiumPage = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-5xl font-bold text-primary dark:text-blue-400">Premium Dashboard</h1>
-                        <p className="mt-3 text-lg text-text dark:text-gray-300">Welcome back, {user.user_metadata.name}</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="icon" className="text-text dark:text-gray-300">
-                            <Bell className="h-5 w-5" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-text dark:text-gray-300">
-                            <Settings className="h-5 w-5" />
-                        </Button>
-                        <Avatar className="border-2 border-primary dark:border-blue-400">
-                            <AvatarImage src={user.user_metadata.avatar_url} />
-                            <AvatarFallback>{user.user_metadata.name?.[0]}</AvatarFallback>
-                        </Avatar>
                     </div>
                 </div>
 

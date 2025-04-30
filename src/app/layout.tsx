@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import '@/src/globals.css'
 import { PostHogProvider } from '@/src/lib/providers'
 import ThemeWrapper from '@/src/lib/components/theme-wrapper'
-import { Navbar } from '@/src/lib/features/navbar'
+import { Navbar } from '../lib/components/navbar'
 
 export const metadata: Metadata = {
   title: 'Next.js Quickstart',
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className='font-primary'>
         <PostHogProvider>
           <ThemeWrapper>
             <Navbar/>

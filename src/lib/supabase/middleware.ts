@@ -1,6 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { prisma } from "@/src/lib/prisma";
 
 const premiumRoutes = ['/premium']
 
@@ -39,17 +38,18 @@ const redirectWithCookies = (request: NextRequest, path: string) => {
     return response
 }
 
-const checkPremiumAccess = async (userId: string) => {
-    const account = await prisma.account.findUnique({
-        where: { userId },
-        select: { status: true }
-    })
-    return account?.status === 'ACTIVE'
+const checkPremiumAccess = async (supabase: ReturnType<typeof createServerClient>, userId: string) => {
+    console.log('Checking premium access for user:', userId)
+    const { data } = await supabase.from('Account').select('status').eq('userId', userId).single()
+    console.log('Premium access data:', data)
+    return data?.status === 'ACTIVE'
 }
 
 export async function updateSession(request: NextRequest) {
+ 
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user } } = await supabase.auth.getUser()
+
     const path = request.nextUrl.pathname
 
     if (!user) {
@@ -58,11 +58,12 @@ export async function updateSession(request: NextRequest) {
         }
     } else {
         if (path.startsWith('/auth')) {
+            console.log("response: /")
             return redirectWithCookies(request, '/')
         }
 
         if (premiumRoutes.includes(path)) {
-            if (!await checkPremiumAccess(user.id)) {
+            if (!await checkPremiumAccess(supabase, user.id)) {
                 return NextResponse.redirect(new URL('/', request.url))
             }
         }
