@@ -21,7 +21,8 @@ export async function createCheckoutSession(formData: CheckoutRequestBody) {
     }
 
     try {
-        const origin = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        // const origin = "https://dash.shrillecho.app" || 'http://localhost:3000';
+        const origin = "https://dash.shrillecho.app"
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [{
