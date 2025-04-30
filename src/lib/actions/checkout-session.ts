@@ -30,8 +30,8 @@ export async function createCheckoutSession(formData: CheckoutRequestBody) {
                 quantity: line_item.quantity
             }],
             mode: 'subscription',
-            success_url: `${origin}/premium?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${origin}/canceled`,
+            success_url: `https://dash.shrillecho.app/premium?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `https://dash.shrillecho.app/canceled`,
             subscription_data: {
                 metadata: {
                     userId: userId

@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     const path = request.nextUrl.pathname
     if (!user) {
-        if (!path.startsWith('https://dash.shrillecho.app/auth')) {
+        if (!path.startsWith('/auth')) {
             return redirectWithCookies(request, '/auth')
         }
     } else {
