@@ -48,11 +48,11 @@ export async function updateSession(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
     const path = request.nextUrl.pathname
     if (!user) {
-        if (!path.startsWith('/auth')) {
+        if (!path.startsWith('https://dash.shrillecho.app/auth')) {
             return redirectWithCookies(request, '/auth')
         }
     } else {
-        if (path.startsWith('/auth')) {
+        if (path.startsWith('https://dash.shrillecho.app/auth')) {
             return redirectWithCookies(request, '/')
         }
         if (premiumRoutes.includes(path)) {
