@@ -21,14 +21,14 @@ export async function GET(request: Request) {
             console.log('Forwarded host:', forwardedHost || 'none')
             console.log('Forwarded proto:', forwardedProto || 'none')
 
-            if (isLocalEnv) {
-                return NextResponse.redirect(`http://localhost:3000${next}`)
-            } else if (forwardedHost && forwardedProto) {
-                return NextResponse.redirect(`${forwardedProto}://${forwardedHost}${next}`)
-            } else {
-                const baseUrl = "https://dash.shrillecho.app"
-                return NextResponse.redirect(`${baseUrl}${next}`)
-            }
+            // if (isLocalEnv) {
+            //     return NextResponse.redirect(`http://localhost:3000${next}`)
+            // } else if (forwardedHost && forwardedProto) {
+            //     return NextResponse.redirect(`${forwardedProto}://${forwardedHost}${next}`)
+            // } else {
+            const baseUrl = "https://dash.shrillecho.app"
+            return NextResponse.redirect(`${baseUrl}${next}`)
+            // }
         }
     } else {
         console.error('No auth code provided in callback')
