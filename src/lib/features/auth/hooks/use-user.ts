@@ -3,9 +3,6 @@ import { supabaseBrowserClient } from '@/src/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 
-// Hardcoded production domain
-const SITE_URL = 'https://dash.shrillecho.app'
-
 export const useUser = () => {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState<User | null>(null)
@@ -22,16 +19,13 @@ export const useUser = () => {
 
         const { data: { subscription } } = supabaseBrowserClient.auth.onAuthStateChange(async (event, _session) => {
             setUser(_session?.user || null)
-
             if (event === 'SIGNED_OUT') {
                 if (window.location.pathname !== '/auth') {
-                    // Use hardcoded domain for redirects
-                    window.location.href = `${SITE_URL}/auth`
+                    router.push('/auth')
                 }
             } else if (event === 'SIGNED_IN') {
                 if (window.location.pathname === '/auth') {
-                    // Use hardcoded domain for redirects
-                    window.location.href = `${SITE_URL}/`
+                    router.push('/')
                 } else {
                     router.refresh()
                 }
