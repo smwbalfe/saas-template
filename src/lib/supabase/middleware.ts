@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Hardcoded production domain
+const SITE_URL = 'https://dash.shrillecho.app'
+
 const premiumRoutes = ['/premium']
 
 const createSupabaseClient = (request: NextRequest) => {
@@ -29,9 +32,10 @@ const createSupabaseClient = (request: NextRequest) => {
 }
 
 const redirectWithCookies = (request: NextRequest, path: string) => {
-    const url = request.nextUrl.clone()
-    url.pathname = path
-    const response = NextResponse.redirect(url)
+    // Create absolute URL with the hardcoded domain
+    const redirectUrl = new URL(path, SITE_URL).toString()
+    const response = NextResponse.redirect(redirectUrl)
+
     request.cookies.getAll().forEach((cookie) => {
         response.cookies.set(cookie.name, cookie.value)
     })
@@ -47,19 +51,24 @@ export async function updateSession(request: NextRequest) {
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user } } = await supabase.auth.getUser()
     const path = request.nextUrl.pathname
+
     if (!user) {
-        if (!path.startsWith('https://dash.shrillecho.app/auth')) {
+        // Not authenticated - redirect to auth page
+        if (path !== '/auth') {
             return redirectWithCookies(request, '/auth')
         }
     } else {
-        if (path.startsWith('https://dash.shrillecho.app/auth')) {
+        // Authenticated - handle redirects
+        if (path === '/auth') {
             return redirectWithCookies(request, '/')
         }
+
         if (premiumRoutes.includes(path)) {
             if (!await checkPremiumAccess(supabase, user.id)) {
-                return NextResponse.redirect(new URL('/', request.url))
+                return redirectWithCookies(request, '/')
             }
         }
     }
+
     return supabaseResponse
 }
