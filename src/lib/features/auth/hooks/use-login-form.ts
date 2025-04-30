@@ -46,7 +46,7 @@ const useLoginForm = (redirectTo: string) => {
             const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}${redirectTo}`
+                    redirectTo: `https://dash.shrillecho.app/`
                 }
             })
             if (error) throw error
