@@ -1,17 +1,11 @@
 "use client"
-
-import { use } from "react"
-import { useUser } from "./auth/session-context"
 import { useAuthListener } from "../hooks/use-auth-listener"
 
 export const Home = () => {
-
     const {user} = useAuthListener()
-
     if (!user) {
         return <div>Loading...</div>
     }
-
     return (
         <div className="p-8 bg-background min-h-screen font-primary dark:bg-orange-500">
             <h1 className="text-heading font-primary mb-6 text-text">User: {user.email}</h1>

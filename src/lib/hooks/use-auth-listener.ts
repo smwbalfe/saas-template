@@ -1,49 +1,47 @@
 import { useState, useEffect } from 'react'
 import { supabaseBrowserClient } from '@/src/lib/supabase/client'
+import { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 import { logSupabaseEvent } from '../actions/log-auth-status'
 
+/*
+    Client side listener to update the user as the backend session is updated
+*/
 export const useAuthListener = () => {
-    const [user, setUser] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState<User | null>(null)
+    const router = useRouter()
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const { data: { user: currentUser } } = await supabaseBrowserClient.auth.getUser()
-            setUser(currentUser)
+            const { data } = await supabaseBrowserClient.auth.getSession()
+            setUser(data.session?.user || null)
+            setLoading(false)
         }
 
         initializeAuth()
 
-        const { data: { subscription } } = supabaseBrowserClient.auth.onAuthStateChange(async (event, session) => {
-            
+        const { data: { subscription } } = supabaseBrowserClient.auth.onAuthStateChange(async (event, _session) => {
+            setUser(_session?.user || null)
             if (event === 'SIGNED_OUT') {
-                setUser(null)
                 if (window.location.pathname !== '/auth') {
-                    window.location.href = '/auth'
+                    router.push('/auth')
                 }
             } else if (event === 'SIGNED_IN') {
-                setUser(session?.user)
                 if (window.location.pathname === '/auth') {
-                    window.location.href = '/'
+                    router.push('/')
+                } else {
+                    router.refresh()
                 }
-            } else if (event === 'PASSWORD_RECOVERY') {
-                const newPassword = prompt('Enter your new password')
-                if (newPassword) {
-                    try {
-                        const { error } = await supabaseBrowserClient.auth.updateUser({ password: newPassword })
-                        if (error) throw error
-                        alert('Password updated successfully')
-                    } catch (error: any) {
-                        alert(error.message)
-                    }
-                }
+            } else if (event === 'TOKEN_REFRESHED') {
+                router.refresh()
             }
         })
 
         return () => {
             subscription?.unsubscribe()
         }
-    }, [])
+    }, [router])
 
     return { user, loading }
 }

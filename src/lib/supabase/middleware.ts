@@ -39,14 +39,11 @@ const redirectWithCookies = (request: NextRequest, path: string) => {
 }
 
 const checkPremiumAccess = async (supabase: ReturnType<typeof createServerClient>, userId: string) => {
-    console.log('Checking premium access for user:', userId)
     const { data } = await supabase.from('Account').select('status').eq('userId', userId).single()
-    console.log('Premium access data:', data)
     return data?.status === 'ACTIVE'
 }
 
 export async function updateSession(request: NextRequest) {
- 
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -58,15 +55,14 @@ export async function updateSession(request: NextRequest) {
         }
     } else {
         if (path.startsWith('/auth')) {
-            console.log("response: /")
             return redirectWithCookies(request, '/')
         }
-
         if (premiumRoutes.includes(path)) {
             if (!await checkPremiumAccess(supabase, user.id)) {
                 return NextResponse.redirect(new URL('/', request.url))
             }
         }
     }
+    
     return supabaseResponse
 }
