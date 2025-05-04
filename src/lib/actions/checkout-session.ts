@@ -1,6 +1,6 @@
 'use server'
 import Stripe from 'stripe';
-import env from '../env';
+import env from '@/src/lib/env';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY as string;
 const stripe = new Stripe(stripeSecretKey);
