@@ -15,6 +15,7 @@
 - Stripe
     - Generate a checkout session
     - Deal with webhook events
+    - stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 ### Authentication
 

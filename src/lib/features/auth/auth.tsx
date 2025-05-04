@@ -37,8 +37,8 @@ export const AuthScreen = ({
     redirectToSignup = "/",
 }: AuthProps) => {
     const [mode, setMode] = useState<"login" | "reset" | "signup">("login")
-    const [message, setMessage] = useState("")
-    const [error, setError] = useState("")
+    const [message, setMessage] = useState<string>("")
+    const [error, setError] = useState<string>("")
 
     const switchMode = (newMode: "login" | "reset" | "signup") => {
         setMode(newMode)

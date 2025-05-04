@@ -26,13 +26,13 @@ export function SignupForm({ onSwitchMode, googleText = "Sign up with Google", r
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
                 {serverError && (
-                    <Alert variant="destructive" className="mb-4">
+                    <Alert variant="destructive" className="mb-4 text-red-500">
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription>{serverError}</AlertDescription>
                     </Alert>
                 )}
                 {successMessage && (
-                    <Alert variant="default" className="mb-4 text-green-500">
+                    <Alert variant="default" className="mb-4 text-red-500">
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription>{successMessage}</AlertDescription>
                     </Alert>

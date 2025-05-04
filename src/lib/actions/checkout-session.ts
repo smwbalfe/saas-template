@@ -1,5 +1,6 @@
 'use server'
 import Stripe from 'stripe';
+import env from '../env';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY as string;
 const stripe = new Stripe(stripeSecretKey);
@@ -21,8 +22,7 @@ export async function createCheckoutSession(formData: CheckoutRequestBody) {
     }
 
     try {
-        // const origin = "https://dash.shrillecho.app" || 'http://localhost:3000';
-        const origin = "https://dash.shrillecho.app"
+       
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [{
@@ -30,8 +30,8 @@ export async function createCheckoutSession(formData: CheckoutRequestBody) {
                 quantity: line_item.quantity
             }],
             mode: 'subscription',
-            success_url: `https://dash.shrillecho.app/premium?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `https://dash.shrillecho.app/canceled`,
+            success_url: `${env.NEXT_PUBLIC_APP_URL}/premium?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${env.NEXT_PUBLIC_APP_URL}/canceled`,
             subscription_data: {
                 metadata: {
                     userId: userId

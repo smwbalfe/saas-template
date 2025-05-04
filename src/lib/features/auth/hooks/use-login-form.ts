@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { loginSchema } from "../forms/schema"
-import { revalidatePath } from "next/cache"
-
+import env from "@/src/lib/env"
 
 const useLoginForm = (redirectTo: string) => {
     const [loading, setLoading] = useState(false)
@@ -46,7 +45,7 @@ const useLoginForm = (redirectTo: string) => {
             const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `https://dash.shrillecho.app/`
+                    redirectTo: `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`
                 }
             })
             if (error) throw error

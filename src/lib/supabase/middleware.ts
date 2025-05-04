@@ -47,6 +47,7 @@ export async function updateSession(request: NextRequest) {
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user } } = await supabase.auth.getUser()
     const path = request.nextUrl.pathname
+    
     if (!user) {
         if (!path.startsWith('/auth')) {
             return redirectWithCookies(request, '/auth')
@@ -56,7 +57,8 @@ export async function updateSession(request: NextRequest) {
             return redirectWithCookies(request, '/')
         }
         if (premiumRoutes.includes(path)) {
-            if (!await checkPremiumAccess(supabase, user.id)) {
+            const hasAccess = await checkPremiumAccess(supabase, user.id)
+            if (!hasAccess) {
                 return NextResponse.redirect(new URL('/', request.url))
             }
         }

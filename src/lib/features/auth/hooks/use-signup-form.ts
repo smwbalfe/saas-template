@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { signupSchema } from "../forms/schema"
+import env from "@/src/lib/env"
 
 export function useSignupForm(redirectTo: string, redirectToSignup: string) {
     const [loading, setLoading] = useState(false)
@@ -49,7 +50,7 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
             const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `https://dash.shrillecho.app/`
+                    redirectTo: env.NEXT_PUBLIC_APP_URL
                 }
             })
             if (error) throw error
