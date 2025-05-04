@@ -31,21 +31,19 @@ const createSupabaseClient = (request: NextRequest) => {
 const redirectWithCookies = (request: NextRequest, path: string) => {
     const url = request.nextUrl.clone()
     url.pathname = path
-    const response = NextResponse.redirect(url)
-    request.cookies.getAll().forEach((cookie) => {
-        response.cookies.set(cookie.name, cookie.value)
-    })
-    return response
+    return NextResponse.redirect(url)
 }
-
 const checkPremiumAccess = async (supabase: ReturnType<typeof createServerClient>, userId: string) => {
     const { data } = await supabase.from('Account').select('status').eq('userId', userId).single()
-    return data?.status === 'ACTIVE'
+    return { hasAccess: data?.status === 'ACTIVE' }
 }
 
 export async function updateSession(request: NextRequest) {
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error) return supabaseResponse
+
     const path = request.nextUrl.pathname
     
     if (!user) {
