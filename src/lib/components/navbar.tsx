@@ -36,8 +36,8 @@ export const Navbar = () => {
 
     const handleDeleteAccount = async () => {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-            await supabaseBrowserClient.auth.signOut()
             await deleteCurrentUser(user?.id!)
+            await supabaseBrowserClient.auth.signOut()
             window.location.reload()
         }
     }

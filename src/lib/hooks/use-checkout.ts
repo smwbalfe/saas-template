@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { createCheckoutSession } from '@/src/lib/actions/checkout-session'
+import { supabaseBrowserClient } from '@/src/lib/supabase/client'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -15,7 +16,20 @@ export const useCheckout = (userId: string | undefined) => {
         }
         setIsLoading(true)
         try {
-            const result = await createCheckoutSession({userId, line_item: {price: 'price_1R7iY4P74SCuSPeLfB4MSpuy', quantity: 1}})
+            const { data } = await supabaseBrowserClient.auth.getUser()
+            const email = data.user?.email || ''
+            const name = data.user?.user_metadata?.name || ''
+            
+            const result = await createCheckoutSession({
+                userId, 
+                email,
+                name,
+                line_item: {
+                    price: 'price_1R7iY4P74SCuSPeLfB4MSpuy', 
+                    quantity: 1
+                }
+            })
+            
             if (result.sessionId) {
                 const stripe = await stripePromise
                 if (!stripe) {

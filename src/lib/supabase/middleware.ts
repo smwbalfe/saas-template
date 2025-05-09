@@ -42,10 +42,13 @@ export async function updateSession(request: NextRequest) {
     const { client: supabase, response: supabaseResponse } = createSupabaseClient(request)
     const { data: { user }, error } = await supabase.auth.getUser()
     
-    if (error) return supabaseResponse
+    const path = request.nextUrl.pathname   
 
-    const path = request.nextUrl.pathname
-    
+    if (error) {
+        if(!path.startsWith('/auth')) {
+            return redirectWithCookies(request, '/auth')
+        }
+    }
     if (!user) {
         if (!path.startsWith('/auth')) {
             return redirectWithCookies(request, '/auth')

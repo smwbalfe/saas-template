@@ -16,5 +16,6 @@ export async function checkSubscription() {
             status: true
         }
     })
+    console.log(account?.status)
     return { isSubscribed: account?.status === 'ACTIVE' }
 }

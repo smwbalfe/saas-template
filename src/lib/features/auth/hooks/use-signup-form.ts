@@ -24,6 +24,7 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
         setLoading(true)
         setServerError("")
         try {
+            console.log('redirectTo', redirectTo)
             const { error } = await supabaseBrowserClient.auth.signUp({
                 email: values.email,
                 password: values.password,
@@ -33,6 +34,7 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
             })
             if (error) throw error
             form.reset()
+            
             setSuccessMessage("Sign up successful. Please check your email for verification.")
            
         } catch (error: any) {
@@ -46,11 +48,12 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
     const handleGoogleLogin = async () => {
         setLoading(true)
         setServerError("")
+   
         try {
             const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: env.NEXT_PUBLIC_APP_URL
+                    redirectTo: `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`
                 }
             })
             if (error) throw error
