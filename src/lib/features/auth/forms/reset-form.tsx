@@ -4,20 +4,16 @@ import * as z from "zod"
 import { Button } from "@/src/lib/components/ui/button"
 import { Input } from "@/src/lib/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/src/lib/components/ui/form"
-import { Alert, AlertDescription } from "@/src/lib/components/ui/alert"
-import { AlertCircle } from "lucide-react"
 import { usePasswordReset } from "../hooks/use-password-reset"
 import { resetSchema } from "./schema"
-import { useState } from "react"
-
+import { AuthAlert } from "../components"
 
 type ResetFormProps = {
     onSwitchMode: (mode: "login" | "reset" | "signup") => void
 }
 
 export function ResetForm({ onSwitchMode }: ResetFormProps) {
-    const { loading, serverError, successMessage,  handlePasswordReset } = usePasswordReset()
-
+    const { loading, serverError, successMessage, handlePasswordReset } = usePasswordReset()
     
     const form = useForm<z.infer<typeof resetSchema>>({
         resolver: zodResolver(resetSchema),
@@ -36,18 +32,8 @@ export function ResetForm({ onSwitchMode }: ResetFormProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                {serverError && (
-                    <Alert variant="destructive" className="mb-4 text-orange-600">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{serverError}</AlertDescription>
-                    </Alert>
-                )}
-                {successMessage && (
-                    <Alert variant="default" className="mb-4 text-green-700 font-medium shadow-accent">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{successMessage}</AlertDescription>
-                    </Alert>
-                )}
+                <AuthAlert message={serverError} type="error" />
+                <AuthAlert message={successMessage} type="success" />
                 <p className="text-sm text-muted-foreground">
                     Enter your email address below and we'll send you a link to reset your password.
                 </p>

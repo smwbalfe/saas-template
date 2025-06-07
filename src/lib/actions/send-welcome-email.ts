@@ -11,7 +11,7 @@ export type EmailData = {
     userId: string;
 }
 
-export async function sendEmail(emailData: EmailData) {
+export async function sendWelcomeEmail(emailData: EmailData) {
     const { email, name, userId } = emailData;
     try {
         const account = await prisma.account.findFirst({

@@ -1,5 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { STRIPE_CACHE_KV, STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe'
+import { STRIPE_SUB_CACHE } from '../stripe/types'
 
 const premiumRoutes = ['/premium']
 
@@ -33,9 +35,16 @@ const redirectWithCookies = (request: NextRequest, path: string) => {
     url.pathname = path
     return NextResponse.redirect(url)
 }
-const checkPremiumAccess = async (supabase: ReturnType<typeof createServerClient>, userId: string) => {
-    const { data } = await supabase.from('Account').select('status').eq('userId', userId).single()
-    return { hasAccess: data?.status === 'ACTIVE' }
+
+export async function getStripeSubByUserId(userId: string) {
+    const stripeCustomerId = await STRIPE_CUSTOMER_ID_KV.get(userId)
+    if (!stripeCustomerId) return null
+    return STRIPE_CACHE_KV.get(stripeCustomerId as string)
+}
+
+export async function checkSubscription(userId: string) {
+    const stripeSub = await getStripeSubByUserId(userId) as STRIPE_SUB_CACHE
+    return stripeSub?.status === 'active' 
 }
 
 export async function updateSession(request: NextRequest) {
@@ -49,6 +58,7 @@ export async function updateSession(request: NextRequest) {
             return redirectWithCookies(request, '/auth')
         }
     }
+    
     if (!user) {
         if (!path.startsWith('/auth')) {
             return redirectWithCookies(request, '/auth')
@@ -58,7 +68,7 @@ export async function updateSession(request: NextRequest) {
             return redirectWithCookies(request, '/')
         }
         if (premiumRoutes.includes(path)) {
-            const hasAccess = await checkPremiumAccess(supabase, user.id)
+            const hasAccess = await checkSubscription(user.id)
             if (!hasAccess) {
                 return NextResponse.redirect(new URL('/', request.url))
             }

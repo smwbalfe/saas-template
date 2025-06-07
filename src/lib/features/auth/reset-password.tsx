@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/src/lib/components/ui/button'
 import { Input } from '@/src/lib/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/lib/components/ui/card'
-import { Alert, AlertDescription } from '@/src/lib/components/ui/alert'
-import { CheckCircle2, AlertCircle } from 'lucide-react'
+import { AuthAlert } from './components'
 
 export const PasswordReset = () => {
     const router = useRouter()
@@ -53,12 +52,7 @@ export const PasswordReset = () => {
                                 className="w-full"
                             />
                         </div>
-                        {message && (
-                            <Alert variant={isError ? "destructive" : "default"}>
-                                {isError ? <AlertCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
-                                <AlertDescription>{message}</AlertDescription>
-                            </Alert>
-                        )}
+                        {message && <AuthAlert message={message} type={isError ? "error" : "success"} />}
                         <Button type="submit" className="w-full" disabled={loading}>
                             {loading ? 'Updating...' : 'Update Password'}
                         </Button>

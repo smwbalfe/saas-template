@@ -2,10 +2,17 @@
 import { useUser } from "@/src/lib/features/auth/hooks/use-user"
 
 export const Home = () => {
-    const {user} = useUser()
+    
+    const { user } = useUser()
+
     if (!user) {
-        return <div>Loading...</div>
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        )
     }
+
     return (
         <div className="p-8 bg-background min-h-screen font-primary dark:bg-orange-500">
             <h1 className="text-heading font-primary mb-6 text-text">User: {user.email}</h1>

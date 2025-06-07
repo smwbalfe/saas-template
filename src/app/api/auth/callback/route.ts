@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/src/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
-import { createOrUpdateUserAccount } from '@/src/lib/utils'
-
+import { makeServerClient } from '@/src/lib/supabase/server'
+import { createOrUpdateUserAccount } from '@/src/lib/actions/create-user'
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
@@ -10,7 +8,7 @@ export async function GET(request: Request) {
     const next = searchParams.get('next') ?? '/'
     
     if (code) {
-        const supabase = await createClient()
+        const supabase = await makeServerClient()
         const { data, error } = await supabase.auth.exchangeCodeForSession(code)
         
         if (!error) {

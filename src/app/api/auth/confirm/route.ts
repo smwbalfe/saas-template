@@ -1,7 +1,7 @@
 import { type EmailOtpType } from '@supabase/supabase-js'
 import { type NextRequest } from 'next/server'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/src/lib/supabase/server'
+import { makeServerClient } from '@/src/lib/supabase/server'
 import { createOrUpdateUserAccount } from '@/src/lib/utils'
 
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         redirect('/error')
     }
 
-    const supabase = await createClient()
+    const supabase = await makeServerClient()
     
     const { data, error } = await supabase.auth.verifyOtp({
         type,

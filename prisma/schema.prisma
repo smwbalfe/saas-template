@@ -9,11 +9,8 @@ datasource db {
 
 model Account {
   id               Int      @id @default(autoincrement()) 
-  userId           String   @unique // supabase user id
+  userId           String   @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  stripeCustomerId String?
-  package          String?
-  status           String   @default("INACTIVE")
   welcomeEmailSent Boolean  @default(false)
 }
