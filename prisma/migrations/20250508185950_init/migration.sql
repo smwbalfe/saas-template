@@ -7,6 +7,7 @@ CREATE TABLE "Account" (
     "stripeCustomerId" TEXT,
     "package" TEXT,
     "status" TEXT NOT NULL DEFAULT 'INACTIVE',
+    "welcomeEmailSent" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );

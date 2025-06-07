@@ -10,7 +10,6 @@
     --color-text: var(--color-gray-900);
     --color-background: var(--color-white);
 
-    --color-button-hover: var(--color-gray-200);
     --font-primary: 'Inter', sans-serif;
     --text-heading: var(--text-2xl);
     --text-subheading: var(--text-xs);

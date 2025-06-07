@@ -2,8 +2,8 @@
 import { Resend } from 'resend';
 import WelcomeEmail from '@/src/lib/emails/welcome';
 import { prisma } from '@/src/lib/prisma';
-const resend = new Resend(process.env.RESEND_API_KEY);
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export type EmailData = {
     email: string;
@@ -11,7 +11,7 @@ export type EmailData = {
     userId: string;
 }
 
-export async function sendEmail(emailData: EmailData) {
+export async function sendWelcomeEmail(emailData: EmailData) {
     const { email, name, userId } = emailData;
     try {
         const account = await prisma.account.findFirst({

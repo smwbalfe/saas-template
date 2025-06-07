@@ -1,15 +1,8 @@
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { FcGoogle } from "react-icons/fc"
 import { Button } from "@/src/lib/components/ui/button"
 import { Input } from "@/src/lib/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/lib/components/ui/form"
-import { Alert, AlertDescription } from "@/src/lib/components/ui/alert"
-import { AlertCircle } from "lucide-react"
 import { useSignupForm } from "../hooks/use-signup-form"
-
+import { AuthAlert, FormDivider, SocialAuthButton } from "../components"
 
 type SignupFormProps = {
     onSwitchMode: (mode: "login" | "reset" | "signup") => void
@@ -18,25 +11,14 @@ type SignupFormProps = {
     redirectToSignup?: string
 }
 
-
 export function SignupForm({ onSwitchMode, googleText = "Sign up with Google", redirectTo = "/api/auth/callback", redirectToSignup = "/" }: SignupFormProps) {
     const { form, loading, serverError, handleSignUp, handleGoogleLogin, successMessage } = useSignupForm(redirectTo, redirectToSignup)
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
-                {serverError && (
-                    <Alert variant="destructive" className="mb-4 text-red-500">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{serverError}</AlertDescription>
-                    </Alert>
-                )}
-                {successMessage && (
-                    <Alert variant="default" className="mb-4 text-red-500">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{successMessage}</AlertDescription>
-                    </Alert>
-                )}
+                <AuthAlert message={serverError} type="error" />
+                <AuthAlert message={successMessage} type="success" />
                 <FormField
                     control={form.control}
                     name="email"
@@ -91,27 +73,16 @@ export function SignupForm({ onSwitchMode, googleText = "Sign up with Google", r
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button variant="default" type="submit" className="w-full text-white " disabled={loading}>
                     {loading ? "Signing up..." : "Sign up"}
                 </Button>
-                <div className="relative my-2">
-                    <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t"></span>
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                    </div>
-                </div>
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
+                <FormDivider />
+                <SocialAuthButton
+                    provider="google"
+                    text={googleText}
                     onClick={handleGoogleLogin}
-                    disabled={loading}
-                >
-                    <FcGoogle className="mr-2 size-5" />
-                    {googleText}
-                </Button>
+                    loading={loading}
+                />
             </form>
         </Form>
     )

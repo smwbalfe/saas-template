@@ -1,10 +1,8 @@
-import { FcGoogle } from "react-icons/fc"
 import { Button } from "@/src/lib/components/ui/button"
 import { Input } from "@/src/lib/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/lib/components/ui/form"
-import { Alert, AlertDescription } from "@/src/lib/components/ui/alert"
-import { AlertCircle } from "lucide-react"
 import useLoginForm from "../hooks/use-login-form"
+import { AuthAlert, FormDivider, SocialAuthButton } from "../components"
 
 type LoginFormProps = {
     onSwitchMode: (mode: "login" | "reset" | "signup") => void
@@ -19,12 +17,7 @@ export function LoginForm({ onSwitchMode, googleText = "Log in with Google", log
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleEmailLogin)} className="space-y-4">
-                {serverError && (
-                    <Alert variant="destructive" className="mb-4">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{serverError}</AlertDescription>
-                    </Alert>
-                )}
+                <AuthAlert message={serverError} type="error" />
                 <FormField
                     control={form.control}
                     name="email"
@@ -73,24 +66,13 @@ export function LoginForm({ onSwitchMode, googleText = "Log in with Google", log
                 <Button type="submit" className="w-full bg-gray-200 hover:bg-gray-500" disabled={loading}>
                     {loading ? "Loading..." : loginText}
                 </Button>
-                <div className="relative my-2">
-                    <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t"></span>
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                    </div>
-                </div>
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full hover:bg-button-hover"
+                <FormDivider />
+                <SocialAuthButton
+                    provider="google"
+                    text={googleText}
                     onClick={handleGoogleLogin}
-                    disabled={loading}
-                >
-                    <FcGoogle className="mr-2 size-5" />
-                    {googleText}
-                </Button>
+                    loading={loading}
+                />
             </form>
         </Form>
     )

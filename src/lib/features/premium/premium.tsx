@@ -2,13 +2,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src
 import { Progress } from '@/src/lib/components/ui/progress'
 import { Button } from '@/src/lib/components/ui/button'
 import { Badge } from '@/src/lib/components/ui/badge'
-import { Activity, BarChart3, Settings, Shield, Users, Zap, ArrowUpRight, ChevronRight } from 'lucide-react'
+import { Activity, BarChart3, Settings, Shield, Users, Zap, ArrowUpRight, ChevronRight, CreditCard } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/lib/components/ui/tabs'
 import { useUser } from '@/src/lib/features/auth/hooks/use-user'
 import { useState } from 'react'
 
 export const PremiumPage = () => {
     const { user } = useUser()
+    const [isLoading, setIsLoading] = useState(false)
     const [usageData, setUsageData] = useState({
         dailyUsage: 75,
         storage: 45,
@@ -25,6 +26,7 @@ export const PremiumPage = () => {
                     <div>
                         <h1 className="text-5xl font-bold text-primary dark:text-blue-400">Premium Dashboard</h1>
                     </div>
+                   
                 </div>
 
                 <Tabs defaultValue="overview" className="space-y-4">

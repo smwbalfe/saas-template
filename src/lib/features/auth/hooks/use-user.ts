@@ -10,8 +10,9 @@ export const useUser = () => {
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const { data } = await supabaseBrowserClient.auth.getSession()
-            setUser(data.session?.user || null)
+            console.log('initializing auth')
+            const { data } = await supabaseBrowserClient.auth.getUser()
+            setUser(data.user || null)
             setLoading(false)
         }
 
