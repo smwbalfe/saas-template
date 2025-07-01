@@ -51,6 +51,8 @@ const allowedEvents: Stripe.Event.Type[] = [
     "payment_intent.succeeded",
     "payment_intent.payment_failed",
     "payment_intent.canceled",
+    "payment_intent.requires_action",
+    "payment_method.attached",
 ];
 
 export async function processEvent(event: Stripe.Event) {

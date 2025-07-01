@@ -1,16 +1,18 @@
-import { prisma } from "@/src/lib/prisma";
-import { sendWelcomeEmail } from "@/src/lib/actions/send-welcome-email";
-import { createAdminClient } from "@/src/lib/supabase/server";
+import { db } from "@/src/lib/db"
+import { accounts } from "@/src/lib/db/schema"
+import { sendWelcomeEmail } from "@/src/lib/actions/send-welcome-email"
+import { createAdminClient } from "@/src/lib/supabase/server"
+import { eq } from "drizzle-orm"
 
 export async function createOrUpdateUserAccount(userId: string) {
     try {
-        const account = await prisma.account.upsert({
-            where: { userId },
-            update: {},
-            create: {
-                userId
-            }
-        })
+        const [account] = await db.insert(accounts)
+            .values({ userId })
+            .onConflictDoUpdate({
+                target: accounts.userId,
+                set: { updatedAt: new Date() }
+            })
+            .returning()
 
         const supabase = await createAdminClient()
         const { data: { user } } = await supabase.auth.admin.getUserById(userId)
@@ -24,7 +26,5 @@ export async function createOrUpdateUserAccount(userId: string) {
         }
     } catch (e) {
         console.error("Failed to create user account:", e)
-    } finally {
-        await prisma.$disconnect()
     }
 }

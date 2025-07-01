@@ -1,7 +1,9 @@
 'use server'
 import { Resend } from 'resend';
 import WelcomeEmail from '@/src/lib/emails/welcome';
-import { prisma } from '@/src/lib/prisma';
+import { db } from '@/src/lib/db';
+import { accounts } from '@/src/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -14,9 +16,10 @@ export type EmailData = {
 export async function sendWelcomeEmail(emailData: EmailData) {
     const { email, name, userId } = emailData;
     try {
-        const account = await prisma.account.findFirst({
-            where: { userId }
-        });
+        const [account] = await db.select()
+            .from(accounts)
+            .where(eq(accounts.userId, userId))
+            .limit(1);
 
         if (!account) {
             return { success: false, error: 'Account not found' };
@@ -40,10 +43,9 @@ export async function sendWelcomeEmail(emailData: EmailData) {
             react: WelcomeEmail({ name })
         });
         
-        await prisma.account.update({
-            where: { id: account.id },
-            data: { welcomeEmailSent: true }
-        });
+        await db.update(accounts)
+            .set({ welcomeEmailSent: true })
+            .where(eq(accounts.id, account.id));
 
         return { success: true, data };
     } catch (error) {
