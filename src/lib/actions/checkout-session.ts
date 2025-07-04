@@ -3,8 +3,8 @@ import Stripe from 'stripe';
 import env from '@/src/lib/env';
 import { STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-02-24.acacia'
+const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-06-30.basil'
 });
 
 type CheckoutRequestBody = {

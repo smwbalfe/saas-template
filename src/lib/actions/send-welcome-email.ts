@@ -4,8 +4,9 @@ import WelcomeEmail from '@/src/lib/emails/welcome';
 import { db } from '@/src/lib/db';
 import { accounts } from '@/src/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import env from '../env';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export type EmailData = {
     email: string;
@@ -30,7 +31,7 @@ export async function sendWelcomeEmail(emailData: EmailData) {
             return { success: true, data: null, alreadySent: true };
         }
 
-        const fromEmail = process.env.RESEND_FROM
+        const fromEmail = env.RESEND_FROM
 
         if (!fromEmail) {
             return { success: false, error: 'Email not found' };

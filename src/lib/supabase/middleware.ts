@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { STRIPE_CACHE_KV, STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe'
 import { STRIPE_SUB_CACHE } from '../stripe/types'
+import env from '../env'
 
 const premiumRoutes = ['/premium']
 
@@ -9,8 +10,8 @@ const createSupabaseClient = (request: NextRequest) => {
     let supabaseResponse = NextResponse.next({ request })
     return {
         client: createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_KEY!,
+            env.NEXT_PUBLIC_SUPABASE_URL,
+            env.NEXT_PUBLIC_SUPABASE_KEY,
             {
                 cookies: {
                     getAll() {

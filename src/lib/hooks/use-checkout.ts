@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { createCheckoutSession } from '@/src/lib/actions/checkout-session'
 import { supabaseBrowserClient } from '@/src/lib/supabase/client'
+import env from '@/src/lib/env'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 export const useCheckout = (userId: string | undefined) => {
     const [isLoading, setIsLoading] = useState(false)

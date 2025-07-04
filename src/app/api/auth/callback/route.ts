@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { makeServerClient } from '@/src/lib/supabase/server'
 import { createOrUpdateUserAccount } from '@/src/lib/actions/create-user'
+import env from '@/src/lib/env'
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
             await createOrUpdateUserAccount(data.user.id)
             
             const forwardedHost = request.headers.get('x-forwarded-host')
-            const isLocalEnv = process.env.NODE_ENV === 'development'
+            const isLocalEnv = env.NODE_ENV === 'development'
             
             if (isLocalEnv) {
                 return NextResponse.redirect(`${origin}${next}`)

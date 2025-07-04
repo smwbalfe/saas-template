@@ -1,9 +1,7 @@
-import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
-import * as schema from './schema'
+import 'dotenv/config'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-})
-
-export const db = drizzle(pool, { schema }) 
+const connectionString = process.env.DATABASE_URL!
+export const client = postgres("postgresql://postgres.mthcwmvkjaudqynbkmbd:ungpNZgMFjMz@aws-0-eu-west-2.pooler.supabase.com:5432/postgres", { prepare: false })
+export const db = drizzle(client);
