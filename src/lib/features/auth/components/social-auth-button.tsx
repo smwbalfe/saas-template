@@ -18,7 +18,7 @@ export function SocialAuthButton({
         <Button
             type="button"
             variant="outline"
-            className="w-full"
+            className="w-full hover:bg-gray-100"
             onClick={onClick}
             disabled={loading}
         >

@@ -4,15 +4,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useSignupForm } from "../hooks/use-signup-form"
 import { AuthAlert, FormDivider, SocialAuthButton } from "../components"
 
-type SignupFormProps = {
-    onSwitchMode: (mode: "login" | "reset" | "signup") => void
-    googleText?: string
-    redirectTo?: string
-    redirectToSignup?: string
-}
 
-export function SignupForm({ onSwitchMode, googleText = "Sign up with Google", redirectTo = "/api/auth/callback", redirectToSignup = "/" }: SignupFormProps) {
-    const { form, loading, serverError, handleSignUp, handleGoogleLogin, successMessage } = useSignupForm(redirectTo, redirectToSignup)
+export function SignupForm() {
+    const { form, loading, serverError, handleSignUp, handleGoogleLogin, successMessage } = useSignupForm()
 
     return (
         <Form {...form}>
@@ -79,7 +73,7 @@ export function SignupForm({ onSwitchMode, googleText = "Sign up with Google", r
                 <FormDivider />
                 <SocialAuthButton
                     provider="google"
-                    text={googleText}
+                    text={"Log in with Google"}
                     onClick={handleGoogleLogin}
                     loading={loading}
                 />

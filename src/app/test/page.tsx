@@ -33,7 +33,7 @@ export default function CryptoSentimentDashboard() {
         <div className="flex gap-4">
           <Input placeholder="Search coin..." className="w-64" />
           <Select>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-32 ">
               <SelectValue placeholder="Timeframe" />
             </SelectTrigger>
             <SelectContent>

@@ -6,10 +6,13 @@ import { z } from "zod"
 import { signupSchema } from "../forms/schema"
 import env from "@/src/lib/env"
 
-export function useSignupForm(redirectTo: string, redirectToSignup: string) {
+export function useSignupForm() {
     const [loading, setLoading] = useState(false)
     const [serverError, setServerError] = useState("")
     const [successMessage, setSuccessMessage] = useState("")
+
+    const googleRedirectTo = `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`
+    const emailRedirectTo = `${env.NEXT_PUBLIC_APP_URL}/`
 
     const form = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
@@ -24,22 +27,19 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
         setLoading(true)
         setServerError("")
         try {
-            console.log('redirectTo', redirectTo)
             const { error } = await supabaseBrowserClient.auth.signUp({
                 email: values.email,
                 password: values.password,
                 options: {
-                    emailRedirectTo: `${window.location.origin}${redirectToSignup}`
+                    emailRedirectTo: emailRedirectTo
                 }
             })
             if (error) throw error
             form.reset()
-            
             setSuccessMessage("Sign up successful. Please check your email for verification.")
            
         } catch (error: any) {
             setServerError(error.message || "Failed to sign up. Please try again.")
-            console.log(error)
         } finally {
             setLoading(false)
         }
@@ -48,18 +48,16 @@ export function useSignupForm(redirectTo: string, redirectToSignup: string) {
     const handleGoogleLogin = async () => {
         setLoading(true)
         setServerError("")
-   
         try {
             const { error } = await supabaseBrowserClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${env.NEXT_PUBLIC_APP_URL}/api/auth/callback`
+                    redirectTo: googleRedirectTo
                 }
             })
             if (error) throw error
         } catch (error: any) {
             setServerError(error.message || "Failed to sign up with Google. Please try again.")
-            console.log(error)
             setLoading(false)
         }
     }

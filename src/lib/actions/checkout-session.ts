@@ -44,7 +44,7 @@ export async function createCheckoutSession(formData: CheckoutRequestBody) {
                 quantity: line_item.quantity
             }],
             mode: 'subscription',
-            success_url: `${env.NEXT_PUBLIC_APP_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${env.NEXT_PUBLIC_APP_URL}/api/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${env.NEXT_PUBLIC_APP_URL}/`,
             subscription_data: {
                 metadata: { 

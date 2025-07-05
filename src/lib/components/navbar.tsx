@@ -19,6 +19,9 @@ import { checkSubscription } from '../actions/check-subscription'
 import { useUser } from '@/src/lib/features/auth/hooks/use-user'
 
 export const Navbar = () => {
+
+    const appName = "RedditBot"
+
     const { user, loading } = useUser()
     const { handleCheckout, isLoading } = useCheckout(user?.id)
     const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null)
@@ -37,9 +40,8 @@ export const Navbar = () => {
 
     const handleDeleteAccount = async () => {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-            await supabaseBrowserClient.auth.signOut()
             await deleteCurrentUser(user?.id!)
-            window.location.reload()
+            await supabaseBrowserClient.auth.signOut()
         }
     }
 
@@ -48,7 +50,7 @@ export const Navbar = () => {
             <nav className="bg-white border-b border-gray-200 shadow-sm">
                 <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                     <div className="flex items-center">
-                        <span className="font-bold text-xl text-gray-800">shrillecho</span>
+                        <span className="font-bold text-xl text-gray-800">{appName}</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="h-8 w-24 bg-gray-200 animate-pulse rounded-md"></div>
@@ -62,7 +64,7 @@ export const Navbar = () => {
         <nav className="bg-white border-b border-gray-200 shadow-sm">
             <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center">
-                    <span className="font-bold text-xl text-gray-800">shrillecho</span>
+                    <span className="font-bold text-xl text-gray-800">{appName}</span>
                 </div>
                 <div className="flex items-center gap-4">
                     {user ? (
@@ -88,7 +90,7 @@ export const Navbar = () => {
                                 <div className="px-2 py-1.5 text-sm text-gray-600">{user.email}</div>
                                 <DropdownMenuSeparator />
                                 {!isSubscribed && (
-                                    <DropdownMenuItem onClick={handleCheckout} disabled={isLoading} className="cursor-pointer bg-white hover:bg-gray-100">
+                                    <DropdownMenuItem onClick={handleCheckout} disabled={isLoading} className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100">
                                         <Zap className="mr-2 h-4 w-4 text-gray-800" />
                                         <span>Upgrade to Premium</span>
                                     </DropdownMenuItem>

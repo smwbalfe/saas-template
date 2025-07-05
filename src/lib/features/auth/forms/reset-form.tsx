@@ -53,13 +53,13 @@ export function ResetForm({ onSwitchMode }: ResetFormProps) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full text-white" disabled={loading}>
                     {loading ? "Sending..." : "Send Reset Link"}
                 </Button>
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="w-full hover:bg-gray-100 hover:text-foreground"
                     onClick={() => onSwitchMode("login")}
                     disabled={loading}
                 >

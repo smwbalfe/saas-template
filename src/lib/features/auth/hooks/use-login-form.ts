@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { loginSchema } from "../forms/schema"
 import env from "@/src/lib/env"
 
-const useLoginForm = (redirectTo: string) => {
+const useLoginForm = () => {
     const [loading, setLoading] = useState(false)
     const [serverError, setServerError] = useState("")
     const router = useRouter()

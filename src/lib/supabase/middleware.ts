@@ -4,7 +4,7 @@ import { STRIPE_CACHE_KV, STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe'
 import { STRIPE_SUB_CACHE } from '../stripe/types'
 import env from '../env'
 
-const premiumRoutes = ['/premium']
+const premiumRoutes = ['/dashboard']
 
 const createSupabaseClient = (request: NextRequest) => {
     let supabaseResponse = NextResponse.next({ request })

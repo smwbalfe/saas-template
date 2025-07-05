@@ -4,41 +4,17 @@ import { Alert, AlertDescription } from "@/src/lib/components/ui/alert"
 import { LoginForm } from "@/src/lib/features/auth/forms/login-form"
 import { ResetForm } from "@/src/lib/features/auth/forms/reset-form"
 import { SignupForm } from "@/src/lib/features/auth/forms/signup-form"
-import { CheckCircleIcon } from "lucide-react"
 
-
-interface AuthProps {
-    heading?: string
-    subheading?: string
-    logo: {
-        url: string
-        src: string
-        alt: string
-    }
-    loginText?: string
-    googleText?: string
-    signupText?: string
-    redirectTo?: string
-    redirectToSignup?: string
-}
-
-export const AuthScreen = ({
-    heading = "Login",
-    subheading = "Welcome back",
-    logo = {
-        url: "https://www.shadcnblocks.com",
-        src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
-        alt: "Shadcnblocks",
-    },
-    loginText = "Log in",
-    googleText = "Log in with Google",
-    signupText = "Don't have an account?",
-    redirectTo = "https://localhost:3000/api/auth/callback",
-    redirectToSignup = "/",
-}: AuthProps) => {
+export const AuthScreen = () => {
     const [mode, setMode] = useState<"login" | "reset" | "signup">("login")
     const [message, setMessage] = useState<string>("")
     const [error, setError] = useState<string>("")
+
+    const logo = {
+        url: "https://www.shadcnblocks.com",
+        src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
+        alt: "Shadcnblocks",
+    }
 
     const switchMode = (newMode: "login" | "reset" | "signup") => {
         setMode(newMode)
@@ -55,10 +31,10 @@ export const AuthScreen = ({
                             <img src={logo.src} className="max-h-8" alt={logo.alt} />
                         </a>
                         <h1 className="mb-2 text-2xl font-bold">
-                            {mode === "login" ? heading : mode === "signup" ? "Sign Up" : "Reset Password"}
+                            {mode === "login" ? "Login" : mode === "signup" ? "Sign Up" : "Reset Password"}
                         </h1>
                         <p className="text-muted-foreground">
-                            {mode === "login" ? subheading : mode === "signup" ? "Create your account" : "Recover your password"}
+                            {mode === "login" ? "Welcome back" : mode === "signup" ? "Create your account" : "Recover your password"}
                         </p>
                     </div>
 
@@ -77,19 +53,11 @@ export const AuthScreen = ({
                     {mode === "login" && (
                         <LoginForm
                             onSwitchMode={switchMode}
-                            googleText={googleText}
-                            loginText={loginText}
-                            redirectTo={redirectTo}
-                        />
+                            />
                     )}
 
                     {mode === "signup" && (
-                        <SignupForm
-                            onSwitchMode={switchMode}
-                            googleText={googleText}
-                            redirectTo={redirectTo}
-                            redirectToSignup={redirectToSignup}
-                        />
+                        <SignupForm/>
                     )}
 
                     {mode === "reset" && (
@@ -98,7 +66,7 @@ export const AuthScreen = ({
 
                     {mode === "login" && (
                         <div className="mx-auto mt-8 flex justify-center gap-1 text-sm text-muted-foreground">
-                            <p>{signupText}</p>
+                            <p>{"New here?"}</p>
                             <button
                                 type="button"
                                 onClick={() => switchMode("signup")}
@@ -129,11 +97,7 @@ export const AuthScreen = ({
 
 export const Auth = () => {
     return (
-        <AuthScreen logo={{
-            url: "https://www.shadcnblocks.com",
-            src: "https://shadcnblocks.com/images/block/logos/shadcnblockscom-icon.svg",
-            alt: "Shadcnblocks"
-        }} />   
+        <AuthScreen/>   
     )
 }
 

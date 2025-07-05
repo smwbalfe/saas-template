@@ -6,13 +6,10 @@ import { AuthAlert, FormDivider, SocialAuthButton } from "../components"
 
 type LoginFormProps = {
     onSwitchMode: (mode: "login" | "reset" | "signup") => void
-    googleText?: string
-    loginText?: string
-    redirectTo?: string
 }
 
-export function LoginForm({ onSwitchMode, googleText = "Log in with Google", loginText = "Log in", redirectTo = "/" }: LoginFormProps) {
-    const { form, loading, serverError, handleEmailLogin, handleGoogleLogin } = useLoginForm(redirectTo)
+export function LoginForm({ onSwitchMode }: LoginFormProps) {
+    const { form, loading, serverError, handleEmailLogin, handleGoogleLogin } = useLoginForm()
 
     return (
         <Form {...form}>
@@ -63,13 +60,13 @@ export function LoginForm({ onSwitchMode, googleText = "Log in with Google", log
                         Forgot password?
                     </button>
                 </div>
-                <Button type="submit" className="w-full bg-gray-200 hover:bg-gray-500" disabled={loading}>
-                    {loading ? "Loading..." : loginText}
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
+                    {loading ? "Loading..." : "Log in"}
                 </Button>
                 <FormDivider />
                 <SocialAuthButton
                     provider="google"
-                    text={googleText}
+                    text={"Log in with Google"}
                     onClick={handleGoogleLogin}
                     loading={loading}
                 />

@@ -20,8 +20,10 @@ const env = {
     
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY!,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+
     RESEND_API_KEY: process.env.RESEND_API_KEY!,
     RESEND_FROM: process.env.RESEND_FROM!,
+    STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID!,
 }
 
 export default env;
