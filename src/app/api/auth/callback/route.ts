@@ -4,7 +4,7 @@ import { createOrUpdateUserAccount } from '@/src/lib/actions/create-user'
 import env from '@/src/lib/env'
 
 export async function GET(request: Request) {
-    const { searchParams, origin } = new URL(request.url)
+    const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const next = searchParams.get('next') ?? '/'
     
@@ -16,18 +16,9 @@ export async function GET(request: Request) {
 
             await createOrUpdateUserAccount(data.user.id)
             
-            const forwardedHost = request.headers.get('x-forwarded-host')
-            const isLocalEnv = env.NODE_ENV === 'development'
-            
-            if (isLocalEnv) {
-                return NextResponse.redirect(`${origin}${next}`)
-            } else if (forwardedHost) {
-                return NextResponse.redirect(`https://${forwardedHost}${next}`)
-            } else {
-                return NextResponse.redirect(`${origin}${next}`)
-            }
+            return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}${next}`)
         }
     }
 
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+    return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}/auth/auth-code-error`)
 }
