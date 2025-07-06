@@ -26,7 +26,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (data.user) {
-        await createOrUpdateUserAccount(data.user.id)
+        try {
+            await createOrUpdateUserAccount(data.user.id)
+        } catch (e) {
+            console.error('Error creating user account:', e)
+        }
     }
     
     redirect(next)

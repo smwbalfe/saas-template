@@ -16,6 +16,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install Drizzle Kit
+        run: npm install -g drizzle-kit dotenv
+      
+      - name: Generate Drizzle migrations
+        run: drizzle-kit generate
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+      
+      - name: Run Drizzle migrations
+        run: drizzle-kit migrate
+        env:
+          DATABASE_URL: ${{ vars.DATABASE_URL }}
+      
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:

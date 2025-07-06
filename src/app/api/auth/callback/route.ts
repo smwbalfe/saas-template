@@ -13,9 +13,11 @@ export async function GET(request: Request) {
         const { data, error } = await supabase.auth.exchangeCodeForSession(code)
         
         if (!error) {
-
-            await createOrUpdateUserAccount(data.user.id)
-            
+            try {
+                await createOrUpdateUserAccount(data.user.id)
+            } catch (e) {
+                console.error('Error creating user account:', e)
+            }
             return NextResponse.redirect(`${env.NEXT_PUBLIC_APP_URL}${next}`)
         }
     }
