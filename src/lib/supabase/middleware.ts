@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { STRIPE_CACHE_KV, STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe'
+import { redis } from '../redis/redis'
 import { STRIPE_SUB_CACHE } from '../stripe/types'
 import env from '../env'
 
@@ -38,9 +38,9 @@ const redirectWithCookies = (request: NextRequest, path: string) => {
 }
 
 async function getStripeSubByUserId(userId: string) {
-    const stripeCustomerId = await STRIPE_CUSTOMER_ID_KV.get(userId)
+    const stripeCustomerId = await redis.get(`user:${userId}:stripe-customer-id`)
     if (!stripeCustomerId) return null
-    return STRIPE_CACHE_KV.get(stripeCustomerId as string)
+    return redis.get(`stripe:customer:${stripeCustomerId}:sub-status`)
 }
 
 async function checkSubscription(userId: string) {
