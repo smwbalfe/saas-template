@@ -8,7 +8,7 @@ import env from '../env';
 
 const resend = new Resend(env.RESEND_API_KEY);
 
-export type EmailData = {
+type EmailData = {
     email: string;
     name: string;
     userId: string;

@@ -5,7 +5,7 @@ import { LoginForm } from "@/src/lib/features/auth/forms/login-form"
 import { ResetForm } from "@/src/lib/features/auth/forms/reset-form"
 import { SignupForm } from "@/src/lib/features/auth/forms/signup-form"
 
-export const AuthScreen = () => {
+const AuthScreen = () => {
     const [mode, setMode] = useState<"login" | "reset" | "signup">("login")
     const [message, setMessage] = useState<string>("")
     const [error, setError] = useState<string>("")
@@ -101,4 +101,3 @@ export const Auth = () => {
     )
 }
 
-export default Auth

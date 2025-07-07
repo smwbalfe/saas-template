@@ -3,7 +3,7 @@ import { makeServerClient } from '../supabase/server'
 import { STRIPE_SUB_CACHE } from '../stripe/types'
 import { STRIPE_CACHE_KV, STRIPE_CUSTOMER_ID_KV } from '../stripe/stripe'
 
-export async function getStripeSubByUserId(userId: string) {
+async function getStripeSubByUserId(userId: string) {
     const stripeCustomerId = await STRIPE_CUSTOMER_ID_KV.get(userId)
 
     if (!stripeCustomerId) return null

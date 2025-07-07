@@ -1,5 +1,5 @@
-# check=skip=SecretsUsedInArgOrEnv
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -18,16 +18,6 @@ ARG STRIPE_SECRET_KEY
 ARG RESEND_API_KEY
 ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
-RUN echo "UPSTASH_REDIS_REST_TOKEN: $UPSTASH_REDIS_REST_TOKEN"
-RUN echo "UPSTASH_REDIS_REST_URL: $UPSTASH_REDIS_REST_URL"
-RUN echo "NEXT_PUBLIC_SUPABASE_URL: $NEXT_PUBLIC_SUPABASE_URL"
-RUN echo "NEXT_PUBLIC_SUPABASE_KEY: $NEXT_PUBLIC_SUPABASE_KEY"
-RUN echo "NEXT_PUBLIC_POSTHOG_KEY: $NEXT_PUBLIC_POSTHOG_KEY"
-RUN echo "NEXT_PUBLIC_POSTHOG_HOST: $NEXT_PUBLIC_POSTHOG_HOST"
-RUN echo "STRIPE_SECRET_KEY: $STRIPE_SECRET_KEY"
-RUN echo "RESEND_API_KEY: $RESEND_API_KEY"
-RUN echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: $NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-
 ENV UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN
 ENV UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
@@ -40,6 +30,26 @@ ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 RUN yarn build
 
+# Runtime stage
+FROM node:20-alpine AS runtime
+
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production && yarn cache clean
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
+
 EXPOSE 3000
 
-CMD ["yarn", "start"] 
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "server.js"] 

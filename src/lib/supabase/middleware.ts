@@ -37,13 +37,13 @@ const redirectWithCookies = (request: NextRequest, path: string) => {
     return NextResponse.redirect(url)
 }
 
-export async function getStripeSubByUserId(userId: string) {
+async function getStripeSubByUserId(userId: string) {
     const stripeCustomerId = await STRIPE_CUSTOMER_ID_KV.get(userId)
     if (!stripeCustomerId) return null
     return STRIPE_CACHE_KV.get(stripeCustomerId as string)
 }
 
-export async function checkSubscription(userId: string) {
+async function checkSubscription(userId: string) {
     const stripeSub = await getStripeSubByUserId(userId) as STRIPE_SUB_CACHE
     return stripeSub?.status === 'active' 
 }
