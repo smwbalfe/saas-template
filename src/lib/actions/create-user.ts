@@ -1,3 +1,4 @@
+'use server'
 import { db } from "@/src/lib/db"
 import { accounts } from "@/src/lib/db/schema"
 import { sendWelcomeEmail } from "@/src/lib/actions/send-welcome-email"
