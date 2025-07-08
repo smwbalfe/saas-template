@@ -4,8 +4,11 @@ import { createOrUpdateUserAccount } from '@/src/lib/actions/create-user'
 import env from '@/src/lib/env'
 
 export async function GET(request: Request) {
-    console.log('Auth callback route called')
     const { searchParams } = new URL(request.url)
+    console.log('Auth callback route called')
+    console.log('Full URL:', request.url)
+    console.log('All search params:', Object.fromEntries(searchParams.entries()))
+    
     const code = searchParams.get('code')
     const next = searchParams.get('next') ?? '/'
     
