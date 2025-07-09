@@ -6,6 +6,8 @@ import env from '@/src/lib/env'
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     console.log('Auth callback route called')
+    console.log('Supabase URL:', env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('Supabase Key present:', !!env.NEXT_PUBLIC_SUPABASE_KEY)
     console.log('Full URL:', request.url)
     console.log('All search params:', Object.fromEntries(searchParams.entries()))
     
